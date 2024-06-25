@@ -204,7 +204,7 @@
                   aria-expanded="false" [attr.aria-controls]="'#navprojectSingle' + project.id">
                   {{ project.name.length > 18 ? project.name.substring(0, 18) + '...' : project.name }}
                   <i class="fas fa-caret-down"></i> </a>
-                <div id="{{ 'navprojectSingle' + project.id }}" class="collapse" data-bs-parent="#navProjectFeature">
+                <div id="{{ 'navprojectSingle' + project.id }}" class="collapse" data-bs-parent="#navProjectFeature" style="padding-left: 16px;">
                   <ul class="nav flex-column">
                     <li class="nav-item" *ngFor="let feature of project.features">
                       <a class="nav-link" [routerLink]="['/dashboard/feature/todo', feature.id]" (click)="setFeatureName(feature.name)">{{ feature.name }}</a>

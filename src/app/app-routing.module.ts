@@ -53,10 +53,14 @@ import { ProfileTeamComponent } from './components/profile/profile-team/profile-
 import { TodoComponent } from './components/todo/todo.component';
 import { ReportComponent } from './components/report/report.component';
 import { FeatureReportComponent } from './components/feature-report/feature-report.component';
+import { DashboardsResolverService } from './services/dashboards-resolver.service';
+import { AlreadyLoggedInGuard } from './AlreadyLoggedInGuard.guard';
 
 const routes: Routes = [
   {path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard], children: [
-    {path: '', component: PageContentComponent},
+    {path: '', component: PageContentComponent,
+      resolve: { dashboard: DashboardsResolverService}
+    },
     {path: 'employees', component: EmployeeComponent},
     {path: 'add-employee', component: AddEmployeeComponent},
     {path: 'edit-employee/:id', component: EditEmployeeComponent},
@@ -107,7 +111,7 @@ const routes: Routes = [
     {path: 'report-feature', component: FeatureReportComponent},
     {path: 'unauthorizes', component: UnauthorizedComponent}
   ]},
-  {path: 'login', component: LoginComponent},
+  {path: 'login', component: LoginComponent, canActivate: [AlreadyLoggedInGuard]},
   {path: '', redirectTo: '/login', pathMatch: 'full' },
   {path: '**', component: ErrorComponent}
 ];

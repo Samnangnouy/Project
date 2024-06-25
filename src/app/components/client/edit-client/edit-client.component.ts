@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Client } from 'src/app/models/client.interface';
 import { ClientService } from 'src/app/services/client.service';
 
@@ -15,7 +16,7 @@ export class EditClientComponent implements OnInit {
   client = new Client();
   selectedFile: File | null = null;
 
-  constructor(private clientService: ClientService, private route:ActivatedRoute, private router:Router) { }
+  constructor(private clientService: ClientService, private route:ActivatedRoute, private router:Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
@@ -68,9 +69,35 @@ export class EditClientComponent implements OnInit {
     if (this.selectedFile) {
       formData.append('image', this.selectedFile, this.selectedFile.name);
     }
-    this.clientService.updateClient(this.id, formData).subscribe(res =>{
-      console.log(res);
-      this.router.navigate(['/dashboard/client']);
+    this.clientService.updateClient(this.id, formData).subscribe({
+      next: (res) => {
+        this.toastr.success('Client added successfully!', 'Success', {
+          timeOut: 2000,
+          progressBar: true
+        });
+        this.router.navigate(['/dashboard/client']);
+      },
+      error: (err) => {
+        if (err.status === 422 && err.error.message) {
+          // Extract and display validation error messages
+          for (const key in err.error.message) {
+            if (err.error.message.hasOwnProperty(key)) {
+              err.error.message[key].forEach((message: string) => {
+                this.toastr.error(message, 'Validation Error', {
+                  timeOut: 4000,
+                  progressBar: true
+                });
+              });
+            }
+          }
+        } else {
+          this.toastr.error('Error adding client: ' + err.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+        console.error('Error adding client:', err);
+      }
     });
   }
 }

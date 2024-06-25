@@ -41,7 +41,6 @@ export class LoginComponent implements OnInit {
       return;
     }
     this.loading = true; // Start loading spinner
-    console.log(this.form.value);
     return this.auth.login(this.form.value).subscribe(
       data => this.handleResponse(data),
       error => this.handleError(error)
@@ -49,25 +48,24 @@ export class LoginComponent implements OnInit {
   }
   
   handleResponse(data: any) {
-    console.log(data.access_token);
-    if(data.message){
+    if (data.message) {
       this.token.handle(data.access_token);
       this.toastr.success(data.message, 'Success', {
         timeOut: 2000,
         progressBar: true
       });
       this.router.navigateByUrl('/dashboard');
-    }else{
-      this.toastr.error(data.error, 'Error', {
-        timeOut: 4000,
-        progressBar: true
-      });
+    } else {
+      this.handleError("Failed! Email or Password does not match.");
     }
-    this.loading = false; // Stop loading spinn
+    this.loading = false; // Stop loading spinner
   }
 
-  handleError(error: any){
-    this.error = error.error.error
+  handleError(error: any) {
+    this.toastr.error(error.error.error, 'Error', {
+      timeOut: 4000,
+      progressBar: true
+    });
     this.loading = false; // Stop loading spinner
   }
   

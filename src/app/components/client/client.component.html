@@ -97,7 +97,7 @@
                           <button class="me-1 btn btn-sm btn-primary" routerLink="/dashboard/edit-client/{{ client.id }}">Edit</button>
                           <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal"
                           data-bs-target="#exampleModal-2"
-                          (click)="setClientToDelete(client.id, client.name)">
+                          (click)="setClientToDelete(client.id, client.company_name)">
                               Delete
                           </button>
                         </td>
@@ -117,7 +117,7 @@
                 <div class="modal-content">
                   <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
-                      Modal title ng man
+                      Client Data
                     </h5>
                     <button
                       type="button"
@@ -127,10 +127,8 @@
                     ></button>
                   </div>
                   <div class="modal-body">
-                    Are you sure you want to delete
-                    <strong>{{ clientToDeleteName }}</strong
-                    >?
-                  </div>
+                    Are you sure you want to delete <strong>{{ clientToDeleteName }}</strong>?
+                  </div>                  
                   <div class="modal-footer">
                     <button
                       type="button"
@@ -141,7 +139,7 @@
                     </button>
                     <button
                       type="button"
-                      class="btn btn-danger"
+                      class="btn btn-danger" data-bs-dismiss="modal"
                       (click)="deleteClient()"
                     >
                       Delete

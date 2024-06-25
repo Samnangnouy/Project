@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DashboardService } from 'src/app/services/dashboard.service';
+import { ActivatedRoute } from '@angular/router';
 import { ChartConfiguration } from 'chart.js';
 
 @Component({
@@ -25,50 +25,24 @@ export class PageContentComponent implements OnInit {
     responsive: false
   };
 
-  constructor(private dashboardService: DashboardService) { }
+  constructor(private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.getDashboard();
-    this.getProject();
-    this.getMember();
-    this.getTask();
-    this.getGraph();
-  }
+    this.route.data.subscribe((response: any) => {
+      console.log('PRODUCT FETCHING', response);
+      const data = response.dashboard;
 
-  getDashboard(){
-    return this.dashboardService.getDashboard().subscribe((res) => {
-      console.log(res);
-      this.data = res;
-    })
-  }
+      // Extract and assign data to component properties
+      this.data = data.dashboard;
+      this.project = data.project.projects;
+      this.member = data.user.member;
+      this.task = data.task.task;
+      this.percent = data.graph;
 
-  getProject(){
-    return this.dashboardService.getProject().subscribe((res) => {
-      console.log(res);
-      this.project = res.projects;
-    })
-  }
+      // Update doughnut chart with graph data
+      this.updateDoughnutChart(data.graph.completedTasks, data.graph.inProgressTasks, data.graph.behindTasks);
 
-  getMember(){
-    return this.dashboardService.getMember().subscribe((res) => {
-      console.log(res);
-      this.member = res.member;
-    })
-  }
-
-  getTask(){
-    return this.dashboardService.getTask().subscribe((res) => {
-      console.log(res);
-      this.task = res.task;
-    })
-  }
-
-  getGraph(){
-    return this.dashboardService.getGraph().subscribe((res) => {
-      console.log(res);
-      // this.task = res.tasks;
-      this.percent = res;
-      this.updateDoughnutChart(res.completedTasks, res.inProgressTasks, res.behindTasks);
+      console.log('PRODUCT FETCHED');
     });
   }
 
@@ -77,5 +51,4 @@ export class PageContentComponent implements OnInit {
       { data: [ completed, inProgress, behind ], label: 'Tasks' },
     ];
   }
-
 }

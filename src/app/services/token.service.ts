@@ -74,4 +74,8 @@ export class TokenService extends AbstractService {
       });
     }
   }
+
+  isTokenPresent(): boolean {
+    return !!this.get();
+  }
 }

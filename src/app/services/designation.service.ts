@@ -41,6 +41,6 @@ export class DesignationService extends AbstractService {
   }
 
   getDesignationsByCategory(categoryId: number): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/api/designations?category_id=${categoryId}`);
+    return this.http.get<any>(`${this.baseUrl}/api/designation?category_id=${categoryId}`);
   }
 }

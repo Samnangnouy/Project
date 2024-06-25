@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { CategoryService } from 'src/app/services/category.service';
 
 @Component({
@@ -14,7 +15,7 @@ export class CategoryComponent implements OnInit {
   categoryToDeleteName!: string;
   searchKeyword: string = '';
 
-  constructor(private category:CategoryService) { }
+  constructor(private category:CategoryService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.getCategory();
@@ -39,10 +40,30 @@ export class CategoryComponent implements OnInit {
   }
 
   deleteCategory(){
-    this.category.deleteCategory(this.categoryToDeleteId).subscribe(res=>{
-      this.getCategory();
-      document.getElementById('exampleModal-2')?.click();
-    });
+    this.category.deleteCategory(this.categoryToDeleteId).subscribe(
+      (res) => {
+        if (res.status === 200) {
+          this.toastr.success(res.message, 'Success', {
+            timeOut: 2000,
+            progressBar: true
+          });
+          this.getCategory();
+          document.getElementById('exampleModal-2')?.click();
+        } else {
+          this.toastr.error(res.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+      },
+      (error) => {
+        console.error('Error:', error);
+        this.toastr.error('An error occurred while deleting the feature.', 'Error', {
+          timeOut: 4000,
+          progressBar: true
+        });
+      }
+    )
   }
 
 }
