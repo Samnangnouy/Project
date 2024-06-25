@@ -19,6 +19,7 @@ export class AddFeatureComponent implements OnInit {
 
   ngOnInit(): void {
     this.getProjectList();
+    this.newFeature.status = 'incompleted';
   }
 
   getProjectList(): void {

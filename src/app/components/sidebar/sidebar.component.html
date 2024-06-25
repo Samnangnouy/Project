@@ -207,7 +207,7 @@
                 <div id="{{ 'navprojectSingle' + project.id }}" class="collapse" data-bs-parent="#navProjectFeature" style="padding-left: 16px;">
                   <ul class="nav flex-column">
                     <li class="nav-item" *ngFor="let feature of project.features">
-                      <a class="nav-link" [routerLink]="['/dashboard/feature/todo', feature.id]" (click)="setFeatureName(feature.name)">{{ feature.name }}</a>
+                      <a class="nav-link" [routerLink]="['/dashboard/feature/todo', feature.id]" (click)="setFeatureName(feature.name)">{{ feature.name }} ({{ feature.tasks_count }})</a>
                     </li>
                   </ul>
                 </div>

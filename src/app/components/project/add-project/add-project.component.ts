@@ -37,6 +37,8 @@ export class AddProjectComponent implements OnInit {
     this.getAdmin();
     this.getClient();
     this.getMember();
+    this.newProject.status = 'pending';
+    this.newProject.priority = 'medium';
   }
 
   getAdmin(){
@@ -147,32 +149,5 @@ export class AddProjectComponent implements OnInit {
       }
     });
   }
-  
-
-  // addProject() {
-  //   this.project.addProject(this.newProject).subscribe(
-  //     (res) => {
-  //       if (res.status === 200) {
-  //         this.toastr.success(res.message, 'Success', {
-  //           timeOut: 2000,
-  //           progressBar: true
-  //         });
-  //         this.router.navigate(['/dashboard/projects']);
-  //       } else {
-  //         this.toastr.error(res.message, 'Error', {
-  //           timeOut: 4000,
-  //           progressBar: true
-  //         });
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Error:', error);
-  //       this.toastr.error('An error occurred while creating the project.', 'Error', {
-  //         timeOut: 4000,
-  //         progressBar: true
-  //       });
-  //     }
-  //   );
-  // }
 
 }
