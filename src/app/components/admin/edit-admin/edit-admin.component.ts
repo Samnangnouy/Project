@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Admin } from 'src/app/models/admin.interface';
 import { AdminService } from 'src/app/services/admin.service';
 import { EmployeeService } from 'src/app/services/employee.service';
@@ -15,7 +16,7 @@ export class EditAdminComponent implements OnInit {
   data: any;
   admin = new Admin();
   employees: any;
-  constructor(private adminService:AdminService, private userService:EmployeeService, private route:ActivatedRoute, private router:Router) { }
+  constructor(private adminService:AdminService, private userService:EmployeeService, private route:ActivatedRoute, private router:Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
@@ -39,9 +40,35 @@ export class EditAdminComponent implements OnInit {
   }
 
   updateAdmin(){
-    this.adminService.updateAdmin(this.id, this.admin).subscribe(res=>{
-      console.log(res);
-      this.router.navigate(['/dashboard/admin']);
+    this.adminService.updateAdmin(this.id, this.admin).subscribe({
+      next: (res) => {
+        this.toastr.success('Admin Group updated successfully!', 'Success', {
+          timeOut: 2000,
+          progressBar: true
+        });
+        this.router.navigate(['/dashboard/admin']);
+      },
+      error: (err) => {
+        if (err.status === 422 && err.error.message) {
+          // Extract and display validation error messages
+          for (const key in err.error.message) {
+            if (err.error.message.hasOwnProperty(key)) {
+              err.error.message[key].forEach((message: string) => {
+                this.toastr.error(message, 'Validation Error', {
+                  timeOut: 4000,
+                  progressBar: true
+                });
+              });
+            }
+          }
+        } else {
+          this.toastr.error('Error updating admin group: ' + err.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+        console.error('Error updating admin group:', err);
+      }
     })
   }
 

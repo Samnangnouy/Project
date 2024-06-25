@@ -373,26 +373,6 @@
                 />
               </div>
             </div>
-            <!-- <div class="mb-3 col-12">
-              <label class="form-label">Assign <span class="text-danger">*</span></label>
-              <select class="form-select" name="user_ids" [(ngModel)]="newTodo.member_id" required multiple>
-                <option value="">Select Employee</option>
-                <option *ngFor="let employee of employees" [value]="employee.id">{{ employee.user.name }}</option>
-              </select>
-            </div> -->
-            <div class="mb-4 col-md-6 col-12">
-              <h5 class="mb-4">Team Members</h5>
-              <div class="d-flex align-items-center">
-                <div class="avatar-group">
-                  <span *ngFor="let member of selectedUsers" class="avatar avatar-sm">
-                    <img [src]="member.user.imageUrl" alt="avatar" class="rounded-circle imgtooltip">
-                  </span>
-                </div>
-                <a href="#!" class="btn btn-icon btn-white border border-2 rounded-circle btn-dashed ms-2" data-template="inviteMember" data-bs-toggle="modal" data-bs-target="#inviteMemberModal">
-                  +
-                </a>
-              </div>
-            </div>
             <div class="mb-4 col-md-6 col-12">
               <label class="form-label">Priority </label>
               <select class="form-select" name="priority" [(ngModel)]="newTodo.priority" required>
@@ -410,7 +390,20 @@
                   <span [innerHTML]="status | addstatus">{{ status }}</span>
                 </option>
               </select>
-            </div>          
+            </div>  
+            <div class="mb-4 col-md-6 col-12">
+              <h5 class="mb-4">Team Members</h5>
+              <div class="d-flex align-items-center">
+                <div class="avatar-group">
+                  <span *ngFor="let member of selectedUsers" class="avatar avatar-sm">
+                    <img [src]="member.user.imageUrl" alt="avatar" class="rounded-circle imgtooltip">
+                  </span>
+                </div>
+                <a href="#!" class="btn btn-icon btn-white border border-2 rounded-circle btn-dashed ms-2" data-template="inviteMember" data-bs-toggle="modal" data-bs-target="#inviteMemberModal">
+                  +
+                </a>
+              </div>
+            </div>        
             <div class="col-md-8"></div>
             <div class="col-12">
               <button class="btn btn-primary" data-bs-dismiss="offcanvas"

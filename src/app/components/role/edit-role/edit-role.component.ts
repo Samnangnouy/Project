@@ -52,25 +52,36 @@ export class EditRoleComponent implements OnInit {
   }   
 
   updateRole() {
-    // Then proceed with updating the role
-    this.roleService.updateRole(this.id, this.role).subscribe(
-      (res) => {
-        if (res.status === 200) {
-          this.toastr.success(res.message, 'Success', {
-            timeOut: 2000,
-            progressBar: true
-          });
-          this.router.navigate(['/dashboard/roles']);
-        }
-      },
-      (error) => {
-        console.error('Error:', error);
-        this.toastr.error('An error occurred while updating the role.', 'Error', {
-          timeOut: 4000,
+    this.roleService.updateRole(this.id, this.role).subscribe({
+      next: (res) => {
+        this.toastr.success('Role updated successfully!', 'Success', {
+          timeOut: 2000,
           progressBar: true
         });
+        this.router.navigate(['/dashboard/roles']);
+      },
+      error: (err) => {
+        if (err.status === 422 && err.error.errors) {
+          // Extract and display validation error messages
+          for (const key in err.error.errors) {
+            if (err.error.errors.hasOwnProperty(key)) {
+              err.error.errors[key].forEach((message: string) => {
+                this.toastr.error(message, 'Validation Error', {
+                  timeOut: 4000,
+                  progressBar: true
+                });
+              });
+            }
+          }
+        } else {
+          this.toastr.error('Error updating role: ' + err.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+        console.error('Error updating role:', err);
       }
-    );
+    })
   }
 
   togglePermission(permissionName: string) {

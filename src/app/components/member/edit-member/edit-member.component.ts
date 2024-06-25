@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Member } from 'src/app/models/member.interface';
 import { CategoryService } from 'src/app/services/category.service';
 import { DesignationService } from 'src/app/services/designation.service';
@@ -23,7 +24,7 @@ export class EditMemberComponent implements OnInit {
 
   constructor(private service:MemberService,private category:CategoryService,
     private designation:DesignationService, private user: EmployeeService,
-    private route:ActivatedRoute, private router:Router,
+    private route:ActivatedRoute, private router:Router, private toastr: ToastrService
      ) { }
 
   ngOnInit(): void {
@@ -62,9 +63,36 @@ export class EditMemberComponent implements OnInit {
   }
 
   updateMember(){
-    this.service.updateMember(this.id, this.member).subscribe(res=>{
-      console.log(res);
-      this.router.navigate(['/dashboard/member']);
+    this.service.updateMember(this.id, this.member).subscribe({
+      next: (res) => {
+        this.toastr.success('Team member updated successfully!', 'Success', {
+          timeOut: 2000,
+          progressBar: true
+        });
+        console.log(res);
+        this.router.navigate(['/dashboard/member']);
+      },
+      error: (err) => {
+        if (err.status === 422 && err.error.message) {
+          // Extract and display validation error messages
+          for (const key in err.error.message) {
+            if (err.error.message.hasOwnProperty(key)) {
+              err.error.message[key].forEach((message: string) => {
+                this.toastr.error(message, 'Validation Error', {
+                  timeOut: 4000,
+                  progressBar: true
+                });
+              });
+            }
+          }
+        } else {
+          this.toastr.error('Error updating team member: ' + err.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+        console.error('Error updating team member:', err);
+      }
     })
   }
 

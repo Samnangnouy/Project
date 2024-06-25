@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { FeatureService } from 'src/app/services/feature.service';
 import { SidebarService } from 'src/app/services/sidebar.service';
 
@@ -14,7 +15,7 @@ export class FeatureComponent implements OnInit {
   featureToDeleteName!: string;
   searchKeyword: string = '';
 
-  constructor(private feature:FeatureService, private sidebarService: SidebarService) { }
+  constructor(private feature:FeatureService, private sidebarService: SidebarService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.getFeature();
@@ -37,10 +38,31 @@ export class FeatureComponent implements OnInit {
   }
 
   deleteFeature() {
-    this.feature.deleteFeature(this.featureToDeleteId).subscribe((res) =>{
-      console.log(res);
-      this.getFeature();
-      this.sidebarService.triggerReload();
-    });
+    this.feature.deleteFeature(this.featureToDeleteId).subscribe(
+      (res) => {
+        if (res.status === 200) {
+          this.toastr.success(res.message, 'Success', {
+            timeOut: 2000,
+            progressBar: true
+          });
+          console.log(res);
+          this.getFeature();
+          this.sidebarService.triggerReload();
+          document.getElementById('exampleModal-2')?.click();
+        } else {
+          this.toastr.error(res.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+      },
+      (error) => {
+        console.error('Error:', error);
+          this.toastr.error('An error occurred while deleting the feature.', 'Error', {
+            timeOut: 4000,
+            progressBar: true
+        });
+      }
+    );
   }
 }

@@ -71,7 +71,7 @@ export class EditClientComponent implements OnInit {
     }
     this.clientService.updateClient(this.id, formData).subscribe({
       next: (res) => {
-        this.toastr.success('Client added successfully!', 'Success', {
+        this.toastr.success('Client updated successfully!', 'Success', {
           timeOut: 2000,
           progressBar: true
         });
@@ -91,12 +91,12 @@ export class EditClientComponent implements OnInit {
             }
           }
         } else {
-          this.toastr.error('Error adding client: ' + err.message, 'Error', {
+          this.toastr.error('Error updating client: ' + err.message, 'Error', {
             timeOut: 4000,
             progressBar: true
           });
         }
-        console.error('Error adding client:', err);
+        console.error('Error updating client:', err);
       }
     });
   }

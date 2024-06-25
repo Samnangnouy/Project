@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { DesignationResponse } from 'src/app/models/designation.response';
 import { DesignationService } from 'src/app/services/designation.service';
 
@@ -15,7 +16,7 @@ export class DesignationComponent implements OnInit {
   designationToDeleteName!: string;
   searchKeyword: string = '';
 
-  constructor(private designation:DesignationService) { }
+  constructor(private designation:DesignationService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.getDesignation();
@@ -40,10 +41,30 @@ export class DesignationComponent implements OnInit {
   }
 
   deleteDesignation(){
-    this.designation.deleteDesignation(this.designationToDeleteId).subscribe(res=>{
-      this.getDesignation();
-      document.getElementById('exampleModal-2')?.click();
-    });
+    this.designation.deleteDesignation(this.designationToDeleteId).subscribe(
+      (res) => {
+        if (res.status === 200) {
+          this.toastr.success(res.message, 'Success', {
+            timeOut: 2000,
+            progressBar: true
+          });
+          this.getDesignation();
+          document.getElementById('exampleModal')?.click();
+        } else {
+          this.toastr.error(res.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+      },
+      (error) => {
+        console.error('Error:', error);
+          this.toastr.error('An error occurred while deleting the feature.', 'Error', {
+            timeOut: 4000,
+            progressBar: true
+        });
+      }
+    );
   }
 
 }

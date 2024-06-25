@@ -48,33 +48,6 @@ export class AddEmployeeComponent implements OnInit {
     }
   }
 
-  // addEmployee(){
-  //   this.employee.addEmployee(this.newEmployee).subscribe(
-  //     (res) => {
-  //       if (res.status === 200) {
-  //         this.toastr.success(res.message, 'Success', {
-  //           timeOut: 2000,
-  //           progressBar: true
-  //         });
-  //         console.log(res);
-  //         this.router.navigate(['/dashboard/employees']);
-  //       } else {
-  //         this.toastr.error(res.message, 'Error', {
-  //           timeOut: 4000,
-  //           progressBar: true
-  //         });
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Error:', error);
-  //       this.toastr.error('An error occurred while creating the project.', 'Error', {
-  //         timeOut: 4000,
-  //         progressBar: true
-  //       });
-  //     }
-  //   );
-  // }
-
   addEmployee(): void {
     const formData = new FormData();
     formData.append('name', this.newEmployee.name);
@@ -85,17 +58,39 @@ export class AddEmployeeComponent implements OnInit {
     if (this.files) {
       formData.append('image', this.files, this.files.name);
     }
-
+  
     this.employee.addEmployee(formData).subscribe({
       next: (res) => {
-        console.log(res);
+        this.toastr.success('User added successfully!', 'Success', {
+          timeOut: 2000,
+          progressBar: true
+        });
         this.router.navigate(['/dashboard/employees']);
       },
       error: (err) => {
-        console.error('Error adding client:', err);
+        if (err.status === 422 && err.error.error) {
+          // Extract and display validation error messages
+          for (const key in err.error.error) {
+            if (err.error.error.hasOwnProperty(key)) {
+              err.error.error[key].forEach((message: string) => {
+                this.toastr.error(message, 'Validation Error', {
+                  timeOut: 4000,
+                  progressBar: true
+                });
+              });
+            }
+          }
+        } else {
+          this.toastr.error('Error adding user: ' + err.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+        console.error('Error adding user:', err);
       }
     });
   }
+  
 
   getRole(){
     return this.role.getRole().subscribe((res) =>{

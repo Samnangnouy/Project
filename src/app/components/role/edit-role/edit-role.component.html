@@ -43,6 +43,7 @@
                           Name is required
                         </div>
                       </div>  
+                      <label class="form-label">Permission <span class="text-danger">*</span></label>
                       <div class="mb-4 col-3" *ngFor="let permission of permissions">
                         <input type="checkbox" [value]="permission.name" name="permission" [checked]="role.permission.includes(permission.name)" (change)="togglePermission(permission.name)">
                         <strong>&nbsp;{{ permission.name }}</strong>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Designation } from 'src/app/models/designation.interface';
 import { CategoryService } from 'src/app/services/category.service';
 import { DesignationService } from 'src/app/services/designation.service';
@@ -15,7 +16,7 @@ export class EditDesignationComponent implements OnInit {
   data: any;
   designation = new Designation();
   categories: any;
-  constructor(private service:DesignationService,private category:CategoryService, private route:ActivatedRoute, private router:Router) { }
+  constructor(private service:DesignationService,private category:CategoryService, private route:ActivatedRoute, private router:Router, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
@@ -39,9 +40,35 @@ export class EditDesignationComponent implements OnInit {
   }
 
   updateDesignation(){
-    this.service.updateDesignation(this.id, this.designation).subscribe(res=>{
-      console.log(res);
-      this.router.navigate(['/dashboard/designation']);
+    this.service.updateDesignation(this.id, this.designation).subscribe({
+      next: (res) => {
+        this.toastr.success('Designation updated successfully!', 'Success', {
+          timeOut: 2000,
+          progressBar: true
+        });
+        this.router.navigate(['/dashboard/designation']);
+      },
+      error: (err) => {
+        if (err.status === 422 && err.error.message) {
+          // Extract and display validation error messages
+          for (const key in err.error.message) {
+            if (err.error.message.hasOwnProperty(key)) {
+              err.error.message[key].forEach((message: string) => {
+                this.toastr.error(message, 'Validation Error', {
+                  timeOut: 4000,
+                  progressBar: true
+                });
+              });
+            }
+          }
+        } else {
+          this.toastr.error('Error updating designation: ' + err.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+        console.error('Error updating designation:', err);
+      }
     })
   }
 

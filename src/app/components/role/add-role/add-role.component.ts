@@ -41,26 +41,36 @@ export class AddRoleComponent implements OnInit {
   }
 
   addRole(){
-    this.role.addRole(this.newRole).subscribe(
-      (res) => {
-        if (res.status === 200) {
-          this.toastr.success(res.message, 'Success', {
-            timeOut: 2000,
-            progressBar: true
-          });
-          console.log(res);
-          this.router.navigate(['/dashboard/roles']);
-        }
-      },
-      (error) => {
-        // Handle error if the request fails
-        console.error('Error:', error);
-        this.toastr.error('An error occurred while creating the project.', 'Error', {
-          timeOut: 4000,
+    this.role.addRole(this.newRole).subscribe({
+      next: (res) => {
+        this.toastr.success('Role added successfully!', 'Success', {
+          timeOut: 2000,
           progressBar: true
         });
+        this.router.navigate(['/dashboard/roles']);
+      },
+      error: (err) => {
+        if (err.status === 422 && err.error.errors) {
+          // Extract and display validation error messages
+          for (const key in err.error.errors) {
+            if (err.error.errors.hasOwnProperty(key)) {
+              err.error.errors[key].forEach((message: string) => {
+                this.toastr.error(message, 'Validation Error', {
+                  timeOut: 4000,
+                  progressBar: true
+                });
+              });
+            }
+          }
+        } else {
+          this.toastr.error('Error adding role: ' + err.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+        console.error('Error adding role:', err);
       }
-    );
+    })
   }
 
   togglePermission(permissionName: string) {

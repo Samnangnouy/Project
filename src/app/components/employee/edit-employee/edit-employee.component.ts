@@ -59,33 +59,6 @@ export class EditEmployeeComponent implements OnInit {
     });
   }
 
-  // updateEmployee(){
-  //   this.service.updateEmployee(this.id, this.employee).subscribe(
-  //     (res) => {
-  //       if(res.status === 200) {
-  //         this.toastr.success(res.message, 'Success', {
-  //           timeOut: 2000,
-  //           progressBar: true
-  //         });
-  //         console.log(res);
-  //         this.router.navigate(['/dashboard/employees']);
-  //       } else {
-  //         this.toastr.error(res.message, 'Error', {
-  //           timeOut: 4000,
-  //           progressBar: true
-  //         });
-  //       }
-  //     },
-  //     (error) => {
-  //       console.error('Error:', error);
-  //       this.toastr.error('An error occurred while creating the project.', 'Error', {
-  //         timeOut: 4000,
-  //         progressBar: true
-  //       });
-  //     }
-  //   );
-  // }
-
   updateEmployee(): void {
     const formData = new FormData();
     formData.append('name', this.employee.name);
@@ -96,9 +69,35 @@ export class EditEmployeeComponent implements OnInit {
     if (this.selectedFile) {
       formData.append('image', this.selectedFile, this.selectedFile.name);
     }
-    this.service.updateEmployee(this.id, formData).subscribe(res =>{
-      console.log(res);
-      this.router.navigate(['/dashboard/employees']);
+    this.service.updateEmployee(this.id, formData).subscribe({
+      next: (res) => {
+        this.toastr.success('User updated successfully!', 'Success', {
+          timeOut: 2000,
+          progressBar: true
+        });
+        this.router.navigate(['/dashboard/employees']);
+      },
+      error: (err) => {
+        if (err.status === 422 && err.error.errors) {
+          // Extract and display validation error messages
+          for (const key in err.error.errors) {
+            if (err.error.errors.hasOwnProperty(key)) {
+              err.error.errors[key].forEach((message: string) => {
+                this.toastr.error(message, 'Validation Error', {
+                  timeOut: 4000,
+                  progressBar: true
+                });
+              });
+            }
+          }
+        } else {
+          this.toastr.error('Error updating user: ' + err.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+        console.error('Error updating user:', err);
+      }
     });
   }
 

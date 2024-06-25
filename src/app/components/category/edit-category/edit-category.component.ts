@@ -33,7 +33,7 @@ export class EditCategoryComponent implements OnInit {
   updateCategory(){
     this.service.updateCategory(this.id, this.category).subscribe({
       next: (res) => {
-        this.toastr.success('Category added successfully!', 'Success', {
+        this.toastr.success('Category updated successfully!', 'Success', {
           timeOut: 2000,
           progressBar: true
         });
@@ -53,12 +53,12 @@ export class EditCategoryComponent implements OnInit {
             }
           }
         } else {
-          this.toastr.error('Error adding category: ' + err.message, 'Error', {
+          this.toastr.error('Error updating category: ' + err.message, 'Error', {
             timeOut: 4000,
             progressBar: true
           });
         }
-        console.error('Error adding category:', err);
+        console.error('Error updating category:', err);
       }
     })
   }

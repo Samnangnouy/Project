@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { AdminService } from 'src/app/services/admin.service';
 
 @Component({
@@ -14,7 +15,7 @@ export class AdminComponent implements OnInit {
   adminToDeleteName!: string;
   searchKeyword: string = '';
 
-  constructor(private adminService: AdminService) { }
+  constructor(private adminService: AdminService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.getAdmin();
@@ -39,10 +40,30 @@ export class AdminComponent implements OnInit {
   }
 
   deleteDesignation(){
-    this.adminService.deleteAdmin(this.adminToDeleteId).subscribe(res=>{
-      this.getAdmin();
-      document.getElementById('exampleModal-2')?.click();
-    });
+    this.adminService.deleteAdmin(this.adminToDeleteId).subscribe(
+      (res) => {
+        if (res.status === 200) {
+          this.toastr.success(res.message, 'Success', {
+            timeOut: 2000,
+            progressBar: true
+          });
+          this.getAdmin();
+          document.getElementById('exampleModal')?.click();
+        } else {
+          this.toastr.error(res.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+      },
+      (error) => {
+        console.error('Error:', error);
+          this.toastr.error('An error occurred while deleting the feature.', 'Error', {
+            timeOut: 4000,
+            progressBar: true
+        });
+      }
+    );
   }
 
 }

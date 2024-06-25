@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ToastrService } from 'ngx-toastr';
 import { MemberResponse } from 'src/app/models/member.response';
 import { MemberService } from 'src/app/services/member.service';
 
@@ -14,7 +15,7 @@ export class MemberComponent implements OnInit {
   memberToDeleteId!: number;
   memberToDeleteName!: string;
   searchKeyword: string = '';
-  constructor(private member:MemberService) { }
+  constructor(private member:MemberService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.getMember();
@@ -48,10 +49,30 @@ export class MemberComponent implements OnInit {
   }
 
   deleteMember(){
-    this.member.deleteMember(this.memberToDeleteId).subscribe(res=>{
-      this.getMember();
-      document.getElementById('exampleModal-2')?.click();
-    });
+    this.member.deleteMember(this.memberToDeleteId).subscribe(
+      (res) => {
+        if (res.status === 200) {
+          this.toastr.success(res.message, 'Success', {
+            timeOut: 2000,
+            progressBar: true
+          });
+          this.getMember();
+          document.getElementById('exampleModal')?.click();
+        } else {
+          this.toastr.error(res.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+      },
+      (error) => {
+        console.error('Error:', error);
+          this.toastr.error('An error occurred while deleting the feature.', 'Error', {
+            timeOut: 4000,
+            progressBar: true
+        });
+      }
+    );
   }
 
 }

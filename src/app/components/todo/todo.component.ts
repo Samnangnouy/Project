@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Employee } from 'src/app/models/employee.interface';
 import { Todo } from 'src/app/models/todo.interface';
 import { StatusPipe } from 'src/app/pipes/status.pipe';
@@ -64,7 +65,7 @@ export class TodoComponent implements OnInit {
   selectedUsers: any[] = [];
   tempSelectedUsers: any[] = [];
 
-  constructor(private todoService: TodoService, private route: ActivatedRoute, private employee: EmployeeService, private statusPipe: StatusPipe, private router:Router, private authService: AuthService, private sharedService: SharedService) { }
+  constructor(private todoService: TodoService, private route: ActivatedRoute, private employee: EmployeeService, private statusPipe: StatusPipe, private router:Router, private authService: AuthService, private sharedService: SharedService, private toastr: ToastrService) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -193,16 +194,38 @@ export class TodoComponent implements OnInit {
 
   addTask() {
     this.newTodo.feature_id = this.featureId;
-    this.todoService.addTodo(this.newTodo).subscribe(
-      res => {
-        console.log(res);
+    this.todoService.addTodo(this.newTodo).subscribe({
+      next: (res) => {
+        this.toastr.success('Task added successfully!', 'Success', {
+          timeOut: 2000,
+          progressBar: true
+        });
         this.getTasks(this.featureId);
         this.form.resetForm();
+        this.selectedUsers = [];
       },
-      error => {
-        console.error(error);
+      error: (err) => {
+        if (err.status === 422 && err.error.message) {
+          // Extract and display validation error messages
+          for (const key in err.error.message) {
+            if (err.error.message.hasOwnProperty(key)) {
+              err.error.message[key].forEach((message: string) => {
+                this.toastr.error(message, 'Validation Error', {
+                  timeOut: 4000,
+                  progressBar: true
+                });
+              });
+            }
+          }
+        } else {
+          this.toastr.error('Error adding task: ' + err.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
+        console.error('Error adding task:', err);
       }
-    );
+    });
   }
   
   showTaskDetail(taskId: number): void {

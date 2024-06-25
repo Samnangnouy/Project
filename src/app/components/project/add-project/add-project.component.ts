@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Project } from 'src/app/models/project.interface';
 import { AdminService } from 'src/app/services/admin.service';
 import { ClientService } from 'src/app/services/client.service';
@@ -28,7 +29,8 @@ export class AddProjectComponent implements OnInit {
   constructor(private project: ProjectService, private router:Router, private admin: AdminService,
     private client: ClientService,
     private member: MemberService,
-    private sidebarService: SidebarService
+    private sidebarService: SidebarService,
+    private toastr: ToastrService
   ) { }
 
   ngOnInit(): void {
@@ -93,32 +95,6 @@ export class AddProjectComponent implements OnInit {
     // this.tempSelectedUsers = []; // Clear temporary selection after inviting
   }
 
-  // addProject(): void {
-  //   const formData = new FormData();
-  //   formData.append('name', this.newProject.name);
-  //   formData.append('status', this.newProject.status);
-  //   formData.append('priority', this.newProject.priority);
-  //   formData.append('start_date', this.newProject.start_date);
-  //   formData.append('end_date', this.newProject.end_date);
-  //   formData.append('admin_id', this.newProject.admin_id);
-  //   formData.append('client_id', this.newProject.client_id);
-  //   formData.append('member_id', this.newProject.member_id);
-  //   formData.append('description', this.newProject.description);
-  //   if (this.files) {
-  //     formData.append('image', this.files, this.files.name);
-  //   }
-
-  //   this.project.addProject(formData).subscribe({
-  //     next: (res) => {
-  //       console.log(res);
-  //       this.router.navigate(['/dashboard/client']);
-  //     },
-  //     error: (err) => {
-  //       console.error('Error adding client:', err);
-  //     }
-  //   });
-  // }
-
   addProject(): void {
     const formData = new FormData();
     formData.append('name', this.newProject.name);
@@ -141,11 +117,32 @@ export class AddProjectComponent implements OnInit {
   
     this.project.addProject(formData).subscribe({
       next: (res) => {
-        console.log(res);
+        this.toastr.success('Project added successfully!', 'Success', {
+          timeOut: 2000,
+          progressBar: true
+        });
         this.router.navigate(['/dashboard/projects']);
         this.sidebarService.triggerReload();
       },
       error: (err) => {
+        if (err.status === 422 && err.error.message) {
+          // Extract and display validation error messages
+          for (const key in err.error.message) {
+            if (err.error.message.hasOwnProperty(key)) {
+              err.error.message[key].forEach((message: string) => {
+                this.toastr.error(message, 'Validation Error', {
+                  timeOut: 4000,
+                  progressBar: true
+                });
+              });
+            }
+          }
+        } else {
+          this.toastr.error('Error adding project: ' + err.message, 'Error', {
+            timeOut: 4000,
+            progressBar: true
+          });
+        }
         console.error('Error adding project:', err);
       }
     });
