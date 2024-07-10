@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Member } from 'src/app/models/member.interface';
+import { AuthService } from 'src/app/services/auth.service';
 import { CategoryService } from 'src/app/services/category.service';
 import { DesignationService } from 'src/app/services/designation.service';
 import { EmployeeService } from 'src/app/services/employee.service';
@@ -21,13 +22,20 @@ export class AddMemberComponent implements OnInit {
 
   constructor(private member:MemberService, private router:Router,
     private category: CategoryService, private designation: DesignationService,
-    private user: EmployeeService, private toastr: ToastrService
+    private user: EmployeeService, private toastr: ToastrService, private authService: AuthService
     ) { }
 
   ngOnInit(): void {
-    this.getCategory();
-    // this.getDesignation();
+    if (!this.authService.hasPermission('member-create')) {
+      this.toastr.error('You do not have permission to create a client.', 'Unauthorized', {
+        timeOut: 4000,
+        progressBar: true
+      });
+      this.router.navigate(['/dashboard/unauthorizes']);
+    } else {
+      this.getCategory();
     this.getUser();
+    }
   }
 
   addMember(){
@@ -80,6 +88,7 @@ export class AddMemberComponent implements OnInit {
 
   getUser(){
     return this.user.getEmployee().subscribe((res) =>{
+      console.log(res);
       console.log(res);
       this.users = res.users;
     })

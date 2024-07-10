@@ -20,6 +20,15 @@ export class FeatureService extends AbstractService {
     return this.http.get(`${this.baseUrl}/api/features?keyword=${keyword}`);
   }
 
+  Feature(keyword: string, page: number, perPage: number): Observable<FeatureResponse> {
+    const params = {
+      keyword: keyword,
+      page: page.toString(),
+      per_page: perPage.toString()
+    };
+    return this.http.get<FeatureResponse>(`${this.baseUrl}/api/features`, { params: params });
+  }
+
   getFeatureByProject(projectId: number): Observable<FeatureResponse>{
     return this.http.get<FeatureResponse>(`${this.baseUrl}/api/features/project/${projectId}`);
   }

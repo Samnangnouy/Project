@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Client } from 'src/app/models/client.interface';
+import { AuthService } from 'src/app/services/auth.service';
 import { ClientService } from 'src/app/services/client.service';
 
 @Component({
@@ -16,11 +17,20 @@ export class EditClientComponent implements OnInit {
   client = new Client();
   selectedFile: File | null = null;
 
-  constructor(private clientService: ClientService, private route:ActivatedRoute, private router:Router, private toastr: ToastrService) { }
+  constructor(private clientService: ClientService, private route:ActivatedRoute, private router:Router, private toastr: ToastrService, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
-    this.getClientById();
+    if (!this.authService.hasPermission('client-edit')) {
+      this.toastr.error('You do not have permission to edit a client.', 'Unauthorized', {
+        timeOut: 4000,
+        progressBar: true
+      });
+      this.router.navigate(['/dashboard/unauthorizes']);
+    } else {
+      console.log(this.id);
+      this.getClientById();
+    }
   }
 
   getClientById(){

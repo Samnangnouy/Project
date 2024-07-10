@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Admin } from 'src/app/models/admin.interface';
 import { AdminService } from 'src/app/services/admin.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 
 @Component({
@@ -14,10 +15,18 @@ export class AddAdminComponent implements OnInit {
 
   newAdmin = new Admin();
   employees: any;
-  constructor(private userService:EmployeeService, private adminService:AdminService, private router:Router, private toastr: ToastrService) { }
+  constructor(private userService:EmployeeService, private adminService:AdminService, private router:Router, private toastr: ToastrService, private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.getEmployeeList();
+    if (!this.authService.hasPermission('admin-create')) {
+      this.toastr.error('You do not have permission to create a category.', 'Unauthorized', {
+        timeOut: 4000,
+        progressBar: true
+      });
+      this.router.navigate(['/dashboard/unauthorizes']);
+    } else {
+      this.getEmployeeList();
+    }
   }
 
   getEmployeeList(): void {

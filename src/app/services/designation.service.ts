@@ -13,11 +13,20 @@ export class DesignationService extends AbstractService {
   constructor(http: HttpClient) { super(http);}
 
   getDesignation(): Observable<DesignationResponse>{
-    return this.http.get<DesignationResponse>(`${this.baseUrl}/api/designations`);
+    return this.http.get<DesignationResponse>(`${this.baseUrl}/api/listdesignations`);
   }
 
   getDesignations(keyword: string) {
-    return this.http.get(`${this.baseUrl}/api/designations?keyword=${keyword}`);
+    return this.http.get(`${this.baseUrl}/api/listdesignations?keyword=${keyword}`);
+  }
+
+  Designation(keyword: string, page: number, perPage: number): Observable<DesignationResponse> {
+    const params = {
+      keyword: keyword,
+      page: page.toString(),
+      per_page: perPage.toString()
+    };
+    return this.http.get<DesignationResponse>(`${this.baseUrl}/api/designations`, { params: params });
   }
 
   addDesignation(designation: Designation): Observable<any>{

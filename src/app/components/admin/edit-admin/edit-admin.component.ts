@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Admin } from 'src/app/models/admin.interface';
 import { AdminService } from 'src/app/services/admin.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 
 @Component({
@@ -16,13 +17,22 @@ export class EditAdminComponent implements OnInit {
   data: any;
   admin = new Admin();
   employees: any;
-  constructor(private adminService:AdminService, private userService:EmployeeService, private route:ActivatedRoute, private router:Router, private toastr: ToastrService) { }
+  constructor(private adminService:AdminService, private userService:EmployeeService, private route:ActivatedRoute, private router:Router, private toastr: ToastrService, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
-    console.log(this.id);
+    if (!this.authService.hasPermission('admin-edit')) {
+      this.toastr.error('You do not have permission to edit a category.', 'Unauthorized', {
+        timeOut: 4000,
+        progressBar: true
+      });
+      this.router.navigate(['/dashboard/unauthorizes']);
+    } else {
+      console.log(this.id);
+      console.log(this.id);
     this.getAdminById();
     this.getEmployeeList();
+    }
   }
 
   getAdminById(){

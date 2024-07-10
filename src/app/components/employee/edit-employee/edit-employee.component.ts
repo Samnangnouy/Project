@@ -24,8 +24,17 @@ export class EditEmployeeComponent implements OnInit {
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
-    this.getEmployeeById();
-    this.getRoleList();
+    if (!this.authService.hasPermission('user-edit')) {
+      // Redirect to unauthorized page or display message
+      this.toastr.error('You do not have permission to edit a user.', 'Unauthorized', {
+        timeOut: 4000,
+        progressBar: true
+      });
+      this.router.navigate(['/dashboard/unauthorizes']);
+    } else {
+      this.getEmployeeById();
+      this.getRoleList();
+    }
   }
 
   getEmployeeById(){

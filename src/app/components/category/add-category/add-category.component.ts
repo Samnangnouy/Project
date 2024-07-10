@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Category } from 'src/app/models/category.interface';
+import { AuthService } from 'src/app/services/auth.service';
 import { CategoryService } from 'src/app/services/category.service';
 
 @Component({
@@ -12,9 +13,18 @@ import { CategoryService } from 'src/app/services/category.service';
 export class AddCategoryComponent implements OnInit {
 
   newCategory = new Category();
-  constructor(private category:CategoryService, private router:Router, private toastr: ToastrService) { }
+  constructor(private category:CategoryService, private router:Router, private toastr: ToastrService, private authService: AuthService) { }
 
   ngOnInit(): void {
+    if (!this.authService.hasPermission('category-create')) {
+      this.toastr.error('You do not have permission to create a category.', 'Unauthorized', {
+        timeOut: 4000,
+        progressBar: true
+      });
+      this.router.navigate(['/dashboard/unauthorizes']);
+    } else {
+    
+    }
   }
 
   addCategory(){

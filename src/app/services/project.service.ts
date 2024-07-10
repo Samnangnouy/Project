@@ -12,7 +12,7 @@ export class ProjectService extends AbstractService {
   constructor(http: HttpClient) { super(http);}
 
   getProject(): Observable<ProjectResponse>{
-    return this.http.get<ProjectResponse>(`${this.baseUrl}/api/projects`);
+    return this.http.get<ProjectResponse>(`${this.baseUrl}/api/listprojects`);
   }
 
   // getProjects(keyword: string) {
@@ -27,7 +27,17 @@ export class ProjectService extends AbstractService {
     if (status) {
       params = params.set('status', status);
     }
-    return this.http.get<ProjectResponse>(`${this.baseUrl}/api/projects`, { params });
+    return this.http.get<ProjectResponse>(`${this.baseUrl}/api/listprojects`, { params });
+  }
+
+  Project(keyword: string, status: string, page: number, perPage: number): Observable<ProjectResponse> {
+    const params = {
+      keyword: keyword,
+      status: status,
+      page: page.toString(),
+      per_page: perPage.toString()
+    };
+    return this.http.get<ProjectResponse>(`${this.baseUrl}/api/projects`, { params: params });
   }
 
   // addClient(client: Client): Observable<any>{

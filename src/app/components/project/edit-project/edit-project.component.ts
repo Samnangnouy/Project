@@ -102,6 +102,10 @@ export class EditProjectComponent implements OnInit {
     }
   }
 
+  isUserInTempTeam(member: any): boolean {
+    return this.tempProjectUsers.some(user => user.id === member.id);
+  }
+  
   removeUserFromTempTeam(member: any) {
     this.tempProjectUsers = this.tempProjectUsers.filter(user => user.id !== member.id);
     this.cdr.detectChanges();

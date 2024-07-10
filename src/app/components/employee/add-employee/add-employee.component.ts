@@ -21,16 +21,15 @@ export class AddEmployeeComponent implements OnInit {
   constructor(private employee:EmployeeService, private router:Router, private role:RoleService, private toastr: ToastrService, private authService: AuthService) { }
 
   ngOnInit(): void {
-    // if (!this.authService.hasPermission('user-create')) {
-    //   this.toastr.error('You do not have permission to create a user.', 'Unauthorized', {
-    //     timeOut: 4000,
-    //     progressBar: true
-    //   });
-    //   this.router.navigate(['/dashboard/unauthorizes']);
-    // } else {
-    //   this.getRole();
-    // }
-    this.getRole();
+    if (!this.authService.hasPermission('user-create')) {
+      this.toastr.error('You do not have permission to create a user.', 'Unauthorized', {
+        timeOut: 4000,
+        progressBar: true
+      });
+      this.router.navigate(['/dashboard/unauthorizes']);
+    } else {
+      this.getRole();
+    }
   }
 
   displaySelectedImage(event: Event): void {

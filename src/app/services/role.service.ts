@@ -13,11 +13,20 @@ export class RoleService extends AbstractService {
   constructor(http: HttpClient) { super(http);}
 
   getRole(): Observable<RoleResponse>{
-    return this.http.get<RoleResponse>(`${this.baseUrl}/api/roles`);
+    return this.http.get<RoleResponse>(`${this.baseUrl}/api/listroles`);
   }
 
   getRoles(keyword: string) {
-    return this.http.get(`${this.baseUrl}/api/roles?keyword=${keyword}`);
+    return this.http.get(`${this.baseUrl}/api/listroles?keyword=${keyword}`);
+  }
+
+  Role(keyword: string, page: number, perPage: number): Observable<RoleResponse> {
+    const params = {
+      keyword: keyword,
+      page: page.toString(),
+      per_page: perPage.toString()
+    };
+    return this.http.get<RoleResponse>(`${this.baseUrl}/api/roles`, { params: params });
   }
 
   addRole(role: Role): Observable<any>{

@@ -13,7 +13,7 @@ export class MemberService extends AbstractService {
   constructor(http: HttpClient) { super(http);}
 
   getMember(): Observable<MemberResponse>{
-    return this.http.get<MemberResponse>(`${this.baseUrl}/api/members`);
+    return this.http.get<MemberResponse>(`${this.baseUrl}/api/listmembers`);
   }
 
   addMember(member: Member): Observable<any>{
@@ -21,7 +21,16 @@ export class MemberService extends AbstractService {
   }
 
   getMembers(keyword: string) {
-    return this.http.get(`${this.baseUrl}/api/members?keyword=${keyword}`);
+    return this.http.get(`${this.baseUrl}/api/listmembers?keyword=${keyword}`);
+  }
+
+  Member(keyword: string, page: number, perPage: number): Observable<MemberResponse> {
+    const params = {
+      keyword: keyword,
+      page: page.toString(),
+      per_page: perPage.toString()
+    };
+    return this.http.get<MemberResponse>(`${this.baseUrl}/api/members`, { params: params });
   }
 
   getMemberById(id: number): Observable<any> {

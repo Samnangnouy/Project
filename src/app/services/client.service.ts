@@ -13,11 +13,20 @@ export class ClientService extends AbstractService {
   constructor(http: HttpClient) { super(http);}
 
   getClient(): Observable<ClientResponse>{
-    return this.http.get<ClientResponse>(`${this.baseUrl}/api/clients`);
+    return this.http.get<ClientResponse>(`${this.baseUrl}/api/listclients`);
   }
 
   getClients(keyword: string) {
-    return this.http.get(`${this.baseUrl}/api/clients?keyword=${keyword}`);
+    return this.http.get(`${this.baseUrl}/api/listclients?keyword=${keyword}`);
+  }
+
+  Client(keyword: string, page: number, perPage: number): Observable<ClientResponse> {
+    const params = {
+      keyword: keyword,
+      page: page.toString(),
+      per_page: perPage.toString()
+    };
+    return this.http.get<ClientResponse>(`${this.baseUrl}/api/clients`, { params: params });
   }
 
   // addClient(client: Client): Observable<any>{

@@ -13,10 +13,20 @@ export class NavbarComponent implements OnInit {
   @ViewChild('navToggle', { static: true }) navToggle!: ElementRef<HTMLAnchorElement>;
   token: any;
   userData: any;
+  toggleSwitch: any;
+  isChecked: boolean = false;
 
   constructor(private renderer: Renderer2, private router:Router, private authService: AuthService, private toastr: ToastrService, private sharedService: SharedService) { }
 
   ngOnInit(): void {
+    const currentTheme = localStorage.getItem('theme');
+
+    if (currentTheme == 'dark') {
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
+
     this.token = localStorage.getItem('token');
     if (this.token) {
       this.authService.getUserProfile().subscribe((data: any) => {
@@ -28,6 +38,17 @@ export class NavbarComponent implements OnInit {
         this.userData = data;
       });
     });
+  }
+
+  swithTheme() {
+    this.isChecked = !this.isChecked;
+    if (this.isChecked) {
+      localStorage.setItem('theme', 'dark');
+      document.documentElement.setAttribute('data-theme', 'dark');
+    } else {
+      localStorage.setItem('theme', 'light');
+      document.documentElement.setAttribute('data-theme', 'light');
+    }
   }
 
   toggleNav(): void {

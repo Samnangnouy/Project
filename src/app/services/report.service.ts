@@ -14,7 +14,23 @@ export class ReportService extends AbstractService{
     return this.http.get<any>(`${this.baseUrl}/api/Reportproject`);
   }
 
+  Project(page: number, perPage: number): Observable<any> {
+    const params = {
+      page: page.toString(),
+      per_page: perPage.toString()
+    };
+    return this.http.get<any>(`${this.baseUrl}/api/Reportproject`, { params: params });
+  }
+
   getFeature(): Observable<any>{
     return this.http.get<any>(`${this.baseUrl}/api/Reportfeature`);
+  }
+
+  Feature(page: number, perPage: number): Observable<any> {
+    const params = {
+      page: page.toString(),
+      per_page: perPage.toString()
+    };
+    return this.http.get<any>(`${this.baseUrl}/api/Reportfeature`, { params: params });
   }
 }

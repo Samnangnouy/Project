@@ -71,6 +71,7 @@ import { ProfileTeamComponent } from './components/profile/profile-team/profile-
 import { TodoComponent } from './components/todo/todo.component';
 import { ReportComponent } from './components/report/report.component';
 import { FeatureReportComponent } from './components/feature-report/feature-report.component';
+import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 
 @NgModule({
   declarations: [
@@ -135,7 +136,8 @@ import { FeatureReportComponent } from './components/feature-report/feature-repo
     ProfileTeamComponent,
     TodoComponent,
     ReportComponent,
-    FeatureReportComponent
+    FeatureReportComponent,
+    LoadingSpinnerComponent
   ],
   imports: [
     BrowserModule,

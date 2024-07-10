@@ -9,6 +9,11 @@ import { ReportService } from 'src/app/services/report.service';
 export class ReportComponent implements OnInit {
 
   projects: any;
+  currentPage: number = 1;
+  totalPages!: number;
+  totalItems!: number;
+  perPage: number = 5;
+
   constructor(private projectReport: ReportService) { }
 
   ngOnInit(): void {
@@ -16,10 +21,39 @@ export class ReportComponent implements OnInit {
   }
 
   getProject(){
-    return this.projectReport.getProject().subscribe((res) => {
+    return this.projectReport.Project(this.currentPage, 5).subscribe((res) => {
       console.log(res);
-      this.projects = res.projects;
+      this.projects = res.projects.data;
+      this.totalPages = res.projects.last_page;
+      this.totalItems = res.projects.total;
     })
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.getProject();
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.getProject();
+    }
+  }
+
+  totalPagesArray(): number[] {
+    return Array.from({ length: this.totalPages }, (_, index) => index + 1);
+  }  
+
+  calculateFirstItemIndex(): number {
+    return (this.currentPage - 1) * this.perPage + 1;
+  }
+  
+  calculateLastItemIndex(): number {
+    const lastItem = this.currentPage * this.perPage;
+    return lastItem > this.totalItems ? this.totalItems : lastItem;
   }
 
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Designation } from 'src/app/models/designation.interface';
+import { AuthService } from 'src/app/services/auth.service';
 import { CategoryService } from 'src/app/services/category.service';
 import { DesignationService } from 'src/app/services/designation.service';
 
@@ -14,10 +15,18 @@ export class AddDesignationComponent implements OnInit {
 
   newDesignation = new Designation();
   categories: any;
-  constructor(private category:CategoryService, private designation:DesignationService, private router:Router, private toastr: ToastrService) { }
+  constructor(private category:CategoryService, private designation:DesignationService, private router:Router, private toastr: ToastrService, private authService: AuthService) { }
 
   ngOnInit(): void {
-    this.getCategoryList();
+    if (!this.authService.hasPermission('designation-create')) {
+      this.toastr.error('You do not have permission to create a client.', 'Unauthorized', {
+        timeOut: 4000,
+        progressBar: true
+      });
+      this.router.navigate(['/dashboard/unauthorizes']);
+    } else {
+      this.getCategoryList();
+    }
   }
 
   getCategoryList(): void {

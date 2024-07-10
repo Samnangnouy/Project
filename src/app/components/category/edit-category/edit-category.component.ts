@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Category } from 'src/app/models/category.interface';
+import { AuthService } from 'src/app/services/auth.service';
 import { CategoryService } from 'src/app/services/category.service';
 
 @Component({
@@ -14,12 +15,20 @@ export class EditCategoryComponent implements OnInit {
   id: any;
   data: any;
   category = new Category();
-  constructor(private service:CategoryService, private route:ActivatedRoute, private router:Router, private toastr: ToastrService) { }
+  constructor(private service:CategoryService, private route:ActivatedRoute, private router:Router, private toastr: ToastrService, private authService: AuthService) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
-    console.log(this.id);
-    this.getCategoryById();
+    if (!this.authService.hasPermission('category-edit')) {
+      this.toastr.error('You do not have permission to edit a category.', 'Unauthorized', {
+        timeOut: 4000,
+        progressBar: true
+      });
+      this.router.navigate(['/dashboard/unauthorizes']);
+    } else {
+      console.log(this.id);
+      this.getCategoryById();
+    }
   }
 
   getCategoryById(){

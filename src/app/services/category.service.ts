@@ -13,11 +13,20 @@ export class CategoryService extends AbstractService {
   constructor(http: HttpClient) { super(http);}
 
   getCategory(): Observable<CategoryResponse>{
-    return this.http.get<CategoryResponse>(`${this.baseUrl}/api/categories`);
+    return this.http.get<CategoryResponse>(`${this.baseUrl}/api/listcategories`);
   }
 
   getCategorys(keyword: string) {
-    return this.http.get(`${this.baseUrl}/api/categories?keyword=${keyword}`);
+    return this.http.get(`${this.baseUrl}/api/listcategories?keyword=${keyword}`);
+  }
+
+  Category(keyword: string, page: number, perPage: number): Observable<CategoryResponse> {
+    const params = {
+      keyword: keyword,
+      page: page.toString(),
+      per_page: perPage.toString()
+    };
+    return this.http.get<CategoryResponse>(`${this.baseUrl}/api/categories`, { params: params });
   }
 
   addCategory(category: Category): Observable<any>{

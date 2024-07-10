@@ -13,11 +13,20 @@ export class AdminService extends AbstractService{
   constructor(http: HttpClient) { super(http);}
 
   getAdmin(): Observable<AdminResponse>{
-    return this.http.get<AdminResponse>(`${this.baseUrl}/api/admins`);
+    return this.http.get<AdminResponse>(`${this.baseUrl}/api/listadmins`);
   }
 
   getAdmins(keyword: string) {
-    return this.http.get(`${this.baseUrl}/api/admins?keyword=${keyword}`);
+    return this.http.get(`${this.baseUrl}/api/listadmins?keyword=${keyword}`);
+  }
+
+  Admin(keyword: string, page: number, perPage: number): Observable<AdminResponse> {
+    const params = {
+      keyword: keyword,
+      page: page.toString(),
+      per_page: perPage.toString()
+    };
+    return this.http.get<AdminResponse>(`${this.baseUrl}/api/admins`, { params: params });
   }
 
   addAdmin(admin: Admin): Observable<any>{

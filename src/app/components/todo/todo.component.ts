@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
@@ -8,6 +8,7 @@ import { StatusPipe } from 'src/app/pipes/status.pipe';
 import { AuthService } from 'src/app/services/auth.service';
 import { EmployeeService } from 'src/app/services/employee.service';
 import { SharedService } from 'src/app/services/shared.service';
+import { SidebarService } from 'src/app/services/sidebar.service';
 import { TodoService } from 'src/app/services/todo.service';
 
 @Component({
@@ -65,7 +66,7 @@ export class TodoComponent implements OnInit {
   selectedUsers: any[] = [];
   tempSelectedUsers: any[] = [];
 
-  constructor(private todoService: TodoService, private route: ActivatedRoute, private employee: EmployeeService, private statusPipe: StatusPipe, private router:Router, private authService: AuthService, private sharedService: SharedService, private toastr: ToastrService) { }
+  constructor(private todoService: TodoService, private route: ActivatedRoute, private employee: EmployeeService, private statusPipe: StatusPipe, private router:Router, private authService: AuthService, private sharedService: SharedService, private toastr: ToastrService, private sidebarService: SidebarService, private cdr: ChangeDetectorRef) { }
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
@@ -116,6 +117,14 @@ export class TodoComponent implements OnInit {
     if (!this.tempSelectedUsers.some(user => user.id === member.id)) {
       this.tempSelectedUsers.push(member);
     }
+  }
+
+  isUserInTempTeam(member: any): boolean {
+    return this.tempSelectedUsers.some(user => user.id === member.id);
+  }
+
+  removeUserFromTempTeam(member: any) {
+    this.tempSelectedUsers = this.tempSelectedUsers.filter(user => user.id !== member.id);
   }
 
   inviteUsers() {
@@ -202,7 +211,25 @@ export class TodoComponent implements OnInit {
         });
         this.getTasks(this.featureId);
         this.form.resetForm();
+        this.sidebarService.triggerReload();
+        this.newTodo = {
+          id: 0,
+          name: '',
+          project_id: 0,
+          feature_id: this.featureId,
+          member_id: [],
+          members: '',
+          status: 'pending',
+          priority: 'medium',
+          start_date: '',
+          end_date: '',
+          description: '',
+          users: [],
+          member: []
+        };
         this.selectedUsers = [];
+        this.tempSelectedUsers = [];
+        this.cdr.detectChanges();
       },
       error: (err) => {
         if (err.status === 422 && err.error.message) {

@@ -16,11 +16,20 @@ export class EmployeeService extends AbstractService {
   constructor(http: HttpClient) { super(http);}
 
   getEmployee(): Observable<EmployeeResponse>{
-    return this.http.get<EmployeeResponse>(`${this.baseUrl}/api/users`);
+    return this.http.get<EmployeeResponse>(`${this.baseUrl}/api/listusers`);
   }
 
   getEmployees(keyword: string) {
-    return this.http.get(`${this.baseUrl}/api/users?keyword=${keyword}`);
+    return this.http.get(`${this.baseUrl}/api/listusers?keyword=${keyword}`);
+  }
+
+  Employee(keyword: string, page: number, perPage: number): Observable<EmployeeResponse> {
+    const params = {
+      keyword: keyword,
+      page: page.toString(),
+      per_page: perPage.toString()
+    };
+    return this.http.get<EmployeeResponse>(`${this.baseUrl}/api/users`, { params: params });
   }
 
   addEmployee(formData: FormData): Observable<any>{

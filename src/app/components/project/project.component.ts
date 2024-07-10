@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { error } from 'console';
 import { ToastrService } from 'ngx-toastr';
 import { ProjectService } from 'src/app/services/project.service';
 import { SidebarService } from 'src/app/services/sidebar.service';
@@ -17,6 +18,12 @@ export class ProjectComponent implements OnInit {
   searchKeyword: string = '';
   selectedStatus: string = '';
   confirmationProjectName: string = '';
+  isLoading: boolean = false;
+  errorMessage: string | undefined;
+  currentPage: number = 1;
+  totalPages!: number;
+  totalItems!: number;
+  perPage: number = 5;
 
   constructor(private projectService: ProjectService, private toastr: ToastrService, private sidebarService: SidebarService) { }
 
@@ -24,17 +31,26 @@ export class ProjectComponent implements OnInit {
     this.getProject();
   }
 
-  // getProject(){
-  //   return this.projectService.getProjects(this.searchKeyword).subscribe((res: any) =>{
-  //     console.log(res);
-  //     this.projects = res.projects;
-  //   })
-  // }
-
   getProject() {
-    this.projectService.getProjects(this.searchKeyword, this.selectedStatus).subscribe((res: any) => {
-      this.projects = res.projects;
-    });
+    this.isLoading = true;
+    this.projectService.Project(this.searchKeyword, this.selectedStatus, this.currentPage, 5).subscribe(
+      (res: any) => {
+        this.projects = res.projects.data;
+        this.totalPages = res.projects.last_page;
+        this.totalItems = res.projects.total;
+        this.errorMessage = undefined;
+        this.isLoading = false;
+      },
+      error => {
+        if (error.status === 404) {
+          this.errorMessage = error.error.message;
+          this.projects = []; 
+        } else {
+          this.errorMessage = 'An error occurred while fetching tasks.';
+        }
+        this.isLoading = false;
+      }
+    )
   }
 
   search() {
@@ -77,5 +93,32 @@ export class ProjectComponent implements OnInit {
         });
       }
     );
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.getProject();
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.getProject();
+    }
+  }
+
+  totalPagesArray(): number[] {
+    return Array.from({ length: this.totalPages }, (_, index) => index + 1);
+  }  
+
+  calculateFirstItemIndex(): number {
+    return (this.currentPage - 1) * this.perPage + 1;
+  }
+  
+  calculateLastItemIndex(): number {
+    const lastItem = this.currentPage * this.perPage;
+    return lastItem > this.totalItems ? this.totalItems : lastItem;
   }
 }

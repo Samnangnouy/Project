@@ -8,4 +8,5 @@ export class Employee {
     image: any;
     imageUrl: any;
     user: any;
+    designation: any;
 }

@@ -20,6 +20,15 @@ export class TaskService extends AbstractService {
     return this.http.get(`${this.baseUrl}/api/tasks?keyword=${keyword}`);
   }
 
+  Task(keyword: string, page: number, perPage: number): Observable<TaskResponse> {
+    const params = {
+      keyword: keyword,
+      page: page.toString(),
+      per_page: perPage.toString()
+    };
+    return this.http.get<TaskResponse>(`${this.baseUrl}/api/tasks`, { params: params });
+  }
+
   addTask(task: Task): Observable<any>{
     return this.http.post<any>(`${this.baseUrl}/api/tasks`, task);
   }

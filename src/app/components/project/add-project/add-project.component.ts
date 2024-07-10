@@ -87,6 +87,14 @@ export class AddProjectComponent implements OnInit {
     }
   }
 
+  removeUserFromTempTeam(member: any) {
+    this.tempSelectedUsers = this.tempSelectedUsers.filter(user => user.id !== member.id);
+  }
+
+  isUserInTempTeam(member: any): boolean {
+    return this.tempSelectedUsers.some(user => user.id === member.id);
+  }
+
   inviteUsers() {
     this.tempSelectedUsers.forEach(member => {
       if (!this.selectedUsers.some(user => user.id === member.id)) {
@@ -107,16 +115,12 @@ export class AddProjectComponent implements OnInit {
     formData.append('admin_id', this.newProject.admin_id);
     formData.append('client_id', this.newProject.client_id);
     formData.append('description', this.newProject.description);
-    
-    // Append each member_id separately
     this.newProject.member_id.forEach(id => {
       formData.append('member_id[]', id);
     });
-    
     if (this.files) {
       formData.append('image', this.files, this.files.name);
     }
-  
     this.project.addProject(formData).subscribe({
       next: (res) => {
         this.toastr.success('Project added successfully!', 'Success', {

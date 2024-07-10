@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { ClientService } from 'src/app/services/client.service';
 import { Client } from 'src/app/models/client.interface';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-add-client',
@@ -15,9 +16,19 @@ export class AddClientComponent implements OnInit {
   newClient: Client = new Client();
   files: File | null = null; // To store the selected file
 
-  constructor(private clientService: ClientService, private router: Router, private toastr: ToastrService) {}
+  constructor(private clientService: ClientService, private router: Router, private toastr: ToastrService, private authService: AuthService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    if (!this.authService.hasPermission('client-create')) {
+      this.toastr.error('You do not have permission to create a client.', 'Unauthorized', {
+        timeOut: 4000,
+        progressBar: true
+      });
+      this.router.navigate(['/dashboard/unauthorizes']);
+    } else {
+    
+    }
+  }
 
   displaySelectedImage(event: Event): void {
     const fileInput = event.target as HTMLInputElement;

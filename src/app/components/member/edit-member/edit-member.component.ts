@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { Member } from 'src/app/models/member.interface';
+import { AuthService } from 'src/app/services/auth.service';
 import { CategoryService } from 'src/app/services/category.service';
 import { DesignationService } from 'src/app/services/designation.service';
 import { EmployeeService } from 'src/app/services/employee.service';
@@ -24,16 +25,24 @@ export class EditMemberComponent implements OnInit {
 
   constructor(private service:MemberService,private category:CategoryService,
     private designation:DesignationService, private user: EmployeeService,
-    private route:ActivatedRoute, private router:Router, private toastr: ToastrService
+    private route:ActivatedRoute, private router:Router, private toastr: ToastrService, private authService: AuthService
      ) { }
 
   ngOnInit(): void {
     this.id = this.route.snapshot.params['id'];
-    console.log(this.id);
-    this.getMemberById();
-    this.getCategoryList();
-    this.getDesignationList();
-    this.getUserList();
+    if (!this.authService.hasPermission('member-edit')) {
+      this.toastr.error('You do not have permission to edit a member.', 'Unauthorized', {
+        timeOut: 4000,
+        progressBar: true
+      });
+      this.router.navigate(['/dashboard/unauthorizes']);
+    } else {
+      console.log(this.id);
+      this.getMemberById();
+      this.getCategoryList();
+      this.getDesignationList();
+      this.getUserList();
+    }
   }
 
   getMemberById(){

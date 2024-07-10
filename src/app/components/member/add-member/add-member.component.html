@@ -56,7 +56,7 @@
                         [ngClass]="{'invalid-input': userField.invalid && (userField.dirty || userField.touched)}"
                         >Please Select User
                           <option value="">Select User</option>
-                          <option *ngFor="let user of users" [value]="user.id">{{ user.name }}</option>
+                          <option *ngFor="let user of users" [value]="user.id">{{ user.name }} | {{ user.roles[0].name }}</option>
                         </select>
                         <div
                           *ngIf="userField.invalid && (userField.dirty || userField.touched)" class="error-message">

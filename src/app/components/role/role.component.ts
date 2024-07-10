@@ -15,6 +15,13 @@ export class RoleComponent implements OnInit {
   roles: any;
   roleToDeleteId!: number;
   roleToDeleteName!: string;
+  isLoading: boolean = false;
+  errorMessage: string | undefined;
+  // permissions: Permission[] = [];
+  currentPage: number = 1;
+  totalPages!: number;
+  totalItems!: number;
+  perPage: number = 5;
 
   constructor(private role:RoleService, private toastr: ToastrService, private authService: AuthService) { }
 
@@ -22,20 +29,26 @@ export class RoleComponent implements OnInit {
     this.getRole();
   }
 
-  getRole() {
-    // Fetch roles regardless of permission
-    this.role.getRoles(this.searchKeyword).subscribe((res: any) => {
-      console.log(res);
-      this.roles = res.roles;
-
-      // If the user doesn't have permission to list roles, display an error message
-      // if (!this.authService.hasPermission('role-list')) {
-      //   this.toastr.error('You do not have permission to see roles list.', 'Unauthorized', {
-      //     timeOut: 4000,
-      //     progressBar: true
-      //   });
-      // }
-    });
+  getRole(){
+    this.isLoading = true;
+    return this.role.Role(this.searchKeyword, this.currentPage, 5).subscribe(
+      (res: any) => {
+        this.roles = res.roles.data;
+        this.totalPages = res.roles.last_page;
+        this.totalItems = res.roles.total;
+        this.errorMessage = undefined;
+        this.isLoading = false;
+      },
+      error => {
+        if (error.status === 404) {
+          this.errorMessage = error.error.message;
+          this.roles = []; 
+        } else {
+          this.errorMessage = 'An error occurred while fetching tasks.';
+        }
+        this.isLoading = false;
+      }
+    )
   }
 
   hasPermission(permission: string): boolean {
@@ -85,6 +98,33 @@ export class RoleComponent implements OnInit {
         progressBar: true
       });
     }
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.getRole();
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.getRole();
+    }
+  }
+
+  totalPagesArray(): number[] {
+    return Array.from({ length: this.totalPages }, (_, index) => index + 1);
+  }  
+
+  calculateFirstItemIndex(): number {
+    return (this.currentPage - 1) * this.perPage + 1;
+  }
+  
+  calculateLastItemIndex(): number {
+    const lastItem = this.currentPage * this.perPage;
+    return lastItem > this.totalItems ? this.totalItems : lastItem;
   }
 
 }

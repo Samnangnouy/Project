@@ -16,6 +16,13 @@ export class EmployeeComponent implements OnInit {
   employeeToDeleteId!: number;
   employeeToDeleteName!: string;
   searchKeyword: string = '';
+  currentPage: number = 1;
+  totalPages!: number;
+  totalItems!: number;
+  perPage: number = 5;
+  isLoading: boolean = false;
+  sortedColumn: string | null = null;
+  sortAscending: boolean = true;
   
   constructor(private employee: EmployeeService, private toastr: ToastrService, private authService: AuthService) { }
 
@@ -28,9 +35,13 @@ export class EmployeeComponent implements OnInit {
   }
 
   getEmployee(){
-    return this.employee.getEmployees(this.searchKeyword).subscribe((res: any) => {
+    this.isLoading = true;
+    return this.employee.Employee(this.searchKeyword, this.currentPage, 5).subscribe((res: any) => {
       console.log(res);
-      this.employees = res.users;
+      this.employees = res.users.data;
+      this.totalPages = res.users.last_page;
+      this.totalItems = res.users.total;
+      this.isLoading = false;
     });
   }
 
@@ -44,7 +55,7 @@ export class EmployeeComponent implements OnInit {
   }
 
   deleteEmployee(){
-    if (this.authService.hasPermission('role-delete')) {
+    if (this.authService.hasPermission('user-delete')) {
       this.employee.deleteEmployee(this.employeeToDeleteId).subscribe(
         (res) => {
           if (res.status === 200) {
@@ -76,6 +87,65 @@ export class EmployeeComponent implements OnInit {
         progressBar: true
       });
     }
+  }
+
+  nextPage() {
+    if (this.currentPage < this.totalPages) {
+      this.currentPage++;
+      this.getEmployee();
+    }
+  }
+
+  prevPage() {
+    if (this.currentPage > 1) {
+      this.currentPage--;
+      this.getEmployee();
+    }
+  }
+
+  totalPagesArray(): number[] {
+    return Array.from({ length: this.totalPages }, (_, index) => index + 1);
+  }  
+
+  calculateFirstItemIndex(): number {
+    return (this.currentPage - 1) * this.perPage + 1;
+  }
+  
+  calculateLastItemIndex(): number {
+    const lastItem = this.currentPage * this.perPage;
+    return lastItem > this.totalItems ? this.totalItems : lastItem;
+  }
+
+  sortBy(column: string): void {
+    if (this.sortedColumn === column) {
+      this.sortAscending = !this.sortAscending;
+    } else {
+      this.sortedColumn = column;
+      this.sortAscending = true;
+    }
+
+    this.employees.sort((a: any, b: any) => {
+      const aValue = this.getFieldValue(a, column);
+      const bValue = this.getFieldValue(b, column);
+
+      if (typeof aValue === 'string' && typeof bValue === 'string') {
+        return this.sortAscending ? aValue.localeCompare(bValue) : bValue.localeCompare(aValue);
+      } else {
+        return this.sortAscending ? aValue - bValue : bValue - aValue;
+      }
+    });
+  }
+
+  private getFieldValue(object: any, field: string): any {
+    // Handle nested fields like 'address.city'
+    const fields = field.split('.');
+    let value = object;
+
+    for (const f of fields) {
+      value = value[f];
+    }
+
+    return value;
   }
 
 }

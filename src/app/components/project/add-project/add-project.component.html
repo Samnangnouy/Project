@@ -220,11 +220,17 @@
                       </div>
                       <div class="ms-2">
                         <h5 class="mb-0">{{ member.user.name }}</h5>
+                        <p class="mb-0 text-muted fs-6">{{ member.designation.name }}</p>
                       </div>
                     </div>
                   </a>
                   <div>
-                    <a class="btn btn-secondary btn-sm" (click)="addUserToTempTeam(member)">Add</a>
+                    <a 
+                      class="btn btn-sm" 
+                      [ngClass]="isUserInTempTeam(member) ? 'btn-primary' : 'btn-secondary'" 
+                      (click)="isUserInTempTeam(member) ? removeUserFromTempTeam(member) : addUserToTempTeam(member)">
+                      {{ isUserInTempTeam(member) ? 'Remove' : 'Add' }}
+                    </a>
                   </div>
                 </div>
               </li>
