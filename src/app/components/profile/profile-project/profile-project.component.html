@@ -23,22 +23,6 @@
                     </div>
                   </div>
                   <!-- dropdown-->
-                  <div class="d-flex align-items-center">
-                    <a href="#!" class="btn btn-ghost btn-icon btn-sm rounded-circle"><i data-feather="star"
-                        class="icon-xs"></i></a>
-                    <div class="dropdown dropstart">
-                      <a href="#!" class="btn btn-ghost btn-icon btn-sm rounded-circle" id="dropdownProjectOne"
-                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="icon-xs" data-feather="more-vertical"></i>
-                      </a>
-                      <div class="dropdown-menu" aria-labelledby="dropdownProjectOne">
-                        <a class="dropdown-item d-flex align-items-center" href="#!">Action</a>
-                        <a class="dropdown-item d-flex align-items-center" href="#!">Another action</a>
-                        <a class="dropdown-item d-flex align-items-center" href="#!">Something else
-                          here</a>
-                      </div>
-                    </div>
-                  </div>
                 </div>
                 <!-- para-->
                 <div class="my-4">
@@ -111,12 +95,9 @@
               </div>
               <!-- card footer -->
               <div class="card-footer">
-                <span class="me-3 "><i class="align-middle icon-xs text-muted me-2
-                    " data-feather="list"></i>{{ project.total_features}} feature</span>
-                <span class="me-3 "><i class="align-middle icon-xs text-muted me-2
-                    " data-feather="message-square"></i>{{ project.total_tasks}} tasks</span>
-                <span><i class="align-middle icon-xs text-muted me-2
-                    "  data-feather="folder"></i>30+ Files</span>
+                <span class="me-3 ">
+                  <i class="bi bi-list-ul text-muted me-2"></i>{{ project.total_features}} feature</span>
+                <span class="me-3 "><i class="bi bi-chat-left text-muted me-2"></i>{{ project.total_tasks}} tasks</span>
               </div>
             </div>
         </div>

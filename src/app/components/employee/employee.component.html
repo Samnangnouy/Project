@@ -59,13 +59,13 @@
               <table class="table text-nowrap mb-0 table-centered">
                 <thead class="table-light">
                   <tr>
-                    <th (click)="sortBy('id')"
+                    <!-- <th (click)="sortBy('id')"
                       class="pe-4 sort"
                       default-sort-order="asc"
                       data-sort="name"
                     >
                       ID  <i *ngIf="sortedColumn === 'id'" class="bi" [ngClass]="sortAscending ? 'bi-sort-up-alt' : 'bi-sort-down'"></i>
-                    </th>
+                    </th> -->
                     <th class="sort" data-sort="profile">Profile</th>
                     <th (click)="sortBy('name')" class="sort" data-sort="name">Name
                       <i *ngIf="sortedColumn === 'name'" class="bi" [ngClass]="sortAscending ? 'bi-sort-up-alt' : 'bi-sort-down'"></i>
@@ -90,7 +90,7 @@
                     </td>
                   </tr>
                   <tr *ngFor="let employee of employees">
-                    <td class="id">{{ employee.id }}</td>
+                    <!-- <td class="id">{{ employee.id }}</td> -->
                     <td class="profile"><img class="avatar-sm avatar rounded-circle" [src]="employee.imageUrl" alt="User Profile"></td>
                     <td class="name">{{ employee.name }}</td>
                     <td class="email_id">{{ employee.email }}</td>

@@ -57,7 +57,7 @@
                   <!-- form group -->
                   <!-- form group -->
                   <div class="mb-4 col-md-6 col-12">
-                    <label class="form-label">Priority
+                    <label class="form-label">Priority <span class="text-danger">*</span>
                     </label>
                     <select class="form-select" name="priority" required
                     [(ngModel)]="newProject.priority">
@@ -69,7 +69,7 @@
                   </div>
                   <!-- form group -->
                   <div class="mb-4 col-md-6 col-12">
-                    <label class="form-label">Status</label>
+                    <label class="form-label">Status <span class="text-danger">*</span></label>
                     <select class="form-select" name="status" required
                     [(ngModel)]="newProject.status">
                       <option value="pending">Pending</option>
@@ -112,7 +112,7 @@
                     </select>
                   </div> -->
                   <div class="mb-4 col-md-6 col-12">
-                    <h5 class="mb-4">Team Members</h5>
+                    <h5 class="mb-4">Team Members <span class="text-danger">*</span></h5>
                     <div class="d-flex align-items-center">
                       <div class="avatar-group">
                         <span *ngFor="let member of selectedUsers" class="avatar avatar-sm">
@@ -131,7 +131,7 @@
           <div class="col-xl-3">
             <div class="card mb-5">
               <div class="card-header">
-                <h4 class="mb-0">Manager</h4>
+                <h4 class="mb-0">Manager <span class="text-danger">*</span></h4>
               </div>
               <div class="card-body">
                 <h5>Team Lead</h5>
@@ -149,7 +149,7 @@
             </div>
             <div class="card mb-5">
               <div class="card-header">
-                <h4 class="mb-0">Client</h4>
+                <h4 class="mb-0">Client <span class="text-danger">*</span></h4>
               </div>
               <div class="card-body">
                 <label class="form-label">Client</label>
@@ -168,7 +168,7 @@
             <div class="card">
               <div class="m-2">
                 <div class="mb-4 d-flex justify-content-center">
-                  <img [src]="selectedImageSrc" alt="example placeholder" style="width: 200px; height: 100px; object-fit: contain;" />
+                  <img [src]="selectedImageSrc" alt="example placeholder" style="width: 200px; border-radius: 8px;" />
                 </div>
                 <div class="d-flex justify-content-center">
                   <div data-mdb-ripple-init class="btn btn-primary btn-rounded btn-sm">
@@ -236,7 +236,7 @@
               </li>
             </ul>
             <div class="text-end mt-4 mb-2">
-              <a class="btn btn-primary" (click)="inviteUsers()">+ Invite</a>
+              <a class="btn btn-primary" data-bs-dismiss="modal" (click)="inviteUsers()">+ Invite</a>
               <a class="btn btn-light bg-gray-400 ms-2" data-bs-dismiss="modal">Close</a>
             </div>
           </div>

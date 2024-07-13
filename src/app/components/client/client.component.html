@@ -59,13 +59,13 @@
                 <table class="table text-nowrap mb-0 table-centered">
                   <thead class="table-light">
                     <tr>
-                      <th
+                      <!-- <th
                         class="pe-4 sort"
                         default-sort-order="asc"
                         data-sort="id"
                       >
                         ID
-                      </th>
+                      </th> -->
                       <th class="sort" data-sort="name">Logo</th>
                       <th class="sort" data-sort="email_id">Email</th>
                       <th class="sort" data-sort="phone">Phone</th>
@@ -80,7 +80,7 @@
                       </td>
                     </tr>
                     <tr *ngFor="let client of clients">
-                      <td class="id">{{ client.id }}</td>
+                      <!-- <td class="id">{{ client.id }}</td> -->
                       <!-- <td class="name"><img [src]="client.imageUrl" alt="Post Image"></td> -->
                       <td class="name"><img [src]="client.imageUrl" alt="Post Image" class="img-4by3-xs rounded"></td>
                       <td class="email_id">{{ client.email }}</td>

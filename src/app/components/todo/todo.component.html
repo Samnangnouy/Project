@@ -84,36 +84,16 @@
                       data-bs-target="#offcanvasRight1"></i>
                     </td>
                     <td (click)="editColumn(task, 'user_ids')" class="editable-column">
-                      <ng-container *ngIf="!isColumnEditable(task.id, 'user_ids'); else editEmployeeName">
-                        <div class="avatar-group">
-                            <!-- Loop through members -->
-                            <ng-container *ngFor="let member of task.members">
-                              <span class="avatar avatar-sm">
-                                <!-- Check if profile image exists -->
-                                <img *ngIf="member.user.image_url" [src]="member.user.image_url" alt="avatar" class="rounded-circle imgtooltip" [attr.data-template]="member.name">
-                                <span [id]="member.user.name" class="d-none">
-                                  <small class="mb-0">{{ member.name }}</small>
-                                </span>
-                              </span>
-                            </ng-container>
-                          </div>
-                      </ng-container>
-                      <ng-template #editEmployeeName>
-                        <select
-                          class="form-select"
-                          name="user_ids"
-                          [(ngModel)]="task.member_id"
-                          (blur)="saveColumn(task, 'user_ids')"
-                          required multiple
-                        >
-                          <option
-                            *ngFor="let employee of employees"
-                            [value]="employee.id"
-                          >
-                            {{ employee.name }}
-                          </option>
-                        </select>
-                      </ng-template>
+                      <div class="avatar-group">
+                        <ng-container *ngFor="let member of task.members">
+                          <span class="avatar avatar-sm">
+                            <img *ngIf="member.user.image_url" [src]="member.user.image_url" alt="avatar" class="rounded-circle imgtooltip" [attr.data-template]="member.name">
+                            <span [id]="member.user.name" class="d-none">
+                              <small class="mb-0">{{ member.name }}</small>
+                            </span>
+                          </span>
+                        </ng-container>
+                      </div>
                     </td>
                     <td
                       (click)="editColumn(task, 'name')"
@@ -554,7 +534,7 @@
               </li>
             </ul>
             <div class="text-end mt-4 mb-2">
-              <a class="btn btn-primary" (click)="inviteUsers()">+ Invite</a>
+              <a class="btn btn-primary" data-bs-dismiss="modal" (click)="inviteUsers()">+ Invite</a>
               <a class="btn btn-light bg-gray-400 ms-2" data-bs-dismiss="modal">Close</a>
             </div>
           </div>
